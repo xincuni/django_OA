@@ -62,7 +62,7 @@ $(document).ready(function(){
              },
             'success': function (data) {
                 if(data['status'] != 200){   //如果返回非200的状态
-                     alert(data['msg']);
+                     swal(data['msg']);
                      get_image_code();
                      self.text('获取验证码');          //
                      self.removeAttr('disabled');

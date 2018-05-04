@@ -86,4 +86,4 @@ def create_captcha():
     img.save(out, format('jpeg'))
     content = out.getvalue()
     out.close()
-    return '', content
+    return text, content

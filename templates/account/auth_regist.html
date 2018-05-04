@@ -45,7 +45,7 @@
 <body class="login-body">
 
 <div class="container">
-    <form class="form-signin" action="/account/user_regist/" method="post">
+    <form class="form-signin" action="{% url 'account:user_regiest' %}" method="post">
          {% csrf_token %}
         <div class="form-signin-heading text-center">
             <h1 class="sign-title">{{message}}</h1>
