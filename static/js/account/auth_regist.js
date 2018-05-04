@@ -69,7 +69,7 @@ $(document).ready(function(){
                      clearInterval(timer);
                 }else{
                     get_image_code();
-                    alert( '验证码已发送至'+data['msg']+'，请注意查收！');
+                    swal( '验证码已发送至'+data['msg']+'，请注意查收！');
                 }
             }
         });

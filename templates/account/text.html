@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form action="{% url "account:send_mobile_code" %}" method="post">
+    <input type="text" name="mobile">
+    <input type="text" name="code">
+    <input type="text" name="captcha">
+    <input type="submit" value="提交">
+    {% csrf_token %}
+</form>
+</body>
+</html>
