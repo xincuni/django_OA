@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from django.contrib.auth.decorators import login_required
 from django.views import View
-from django.shortcuts import render, redirect
+from django_OA.common_fun import login_required, MyLoginRequired
+from django.shortcuts import render, redirect, reverse
 from django.http import JsonResponse, HttpResponse
 from libs import (create_captcha_img,
                   get_mobile_code_libs,
@@ -9,6 +11,8 @@ from libs import (create_captcha_img,
                   login,
                   auth_captche,
                   )
+
+
 # Create your views here.
 class UserRegiest(View):
     """
@@ -87,8 +91,14 @@ def send_mobile_code(request):
 
 
 class UserLogin(View):
+    """
+    用户登录
+    """
+
     def get(self, request):
-        return render(request, 'account/auth_login.html')
+        next = request.GET.get('next', '')
+        kw = {'next': next if next else '/account/profile'}
+        return render(request, 'account/auth_login.html', kw)
 
     def post(self, request):
         postdata = request.POST.copy()
@@ -110,3 +120,34 @@ class UserLogin(View):
                 return JsonResponse({'status': 200, 'msg': '你好新用户'})
             else:
                 return JsonResponse({'status': 200, 'msg': result['msg']})
+
+
+# class Profile(MyLoginRequired, View):
+#     """
+#     用户主页
+#     """
+#
+#     # @login_required
+#     def get(self, request):
+#         return render(request, 'account/account_profile.html')
+
+
+@login_required
+def Profile(request):
+    """
+    用户登录后显示个人主页
+    :param request:
+    :return:
+    """
+    return render(request, 'account/account_profile.html')
+
+
+@login_required
+def logout(request):
+    request.session.flush()
+    return redirect(reverse('account:UserLogin'))
+
+
+@login_required
+def user_edit(request):
+    return render(request, 'account/account_edit.html')

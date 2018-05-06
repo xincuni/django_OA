@@ -34,9 +34,9 @@ def regiest(request, mobile, name, mobile_captcha, code, captcha, password1, pas
     if mobile == '' or name == '':
         return {'status': False, 'msg': '参数不能为空'}
 
-    # if conn.get("captcha:%s" % code) != captcha.lower() or \
-    #                 conn.get("mobile_code:%s" % mobile) != mobile_captcha:
-    #     return {'status': False, 'msg': '验证码不正确'}
+    if conn.get("captcha:%s" % code) != captcha.lower() or \
+                    conn.get("mobile_code:%s" % mobile) != mobile_captcha:
+        return {'status': False, 'msg': '验证码不正确'}
 
     if User.by_name(name) is not None:
         return {'status': False, 'msg': '用户已经存在'}
