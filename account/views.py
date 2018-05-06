@@ -9,8 +9,9 @@ from libs import (create_captcha_img,
                   get_mobile_code_libs,
                   regiest,
                   login,
-                  auth_captche,
-                  )
+                  edit_profile,
+                  bind_email_libs,
+                  auth_captche, )
 
 
 # Create your views here.
@@ -144,10 +145,43 @@ def Profile(request):
 
 @login_required
 def logout(request):
+    """
+    登出函数
+    :param request:
+    :return:
+    """
     request.session.flush()
     return redirect(reverse('account:UserLogin'))
 
 
 @login_required
 def user_edit(request):
+    """
+    用户个人中心修改
+    :param request:
+    :return:
+    """
+    if request.method == "POST":
+        postdata = request.POST.copy()
+        name = postdata.get('name', '')
+        password = postdata.get('password', '')
+        result = edit_profile(request, name, password)
+        kw = {'message': result['msg']}
+        if result['status'] is False:
+            return render(request, 'account/account_edit.html', kw)
+        return render(request, 'account/account_edit.html', kw)
     return render(request, 'account/account_edit.html')
+
+
+@login_required
+def bind_user_email(request):
+    if request.method == "POST":
+        postdata = request.POST.copy()
+        email = postdata.get('email', '')
+        result = bind_email_libs(request, email)
+        kw = {'message': result['msg']}
+        if result['status'] is False:
+            return HttpResponse(result['msg'])
+        return HttpResponse(result['msg'])
+
+    return render(request, 'account/account_bind_email.html')
