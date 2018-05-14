@@ -11,6 +11,8 @@ from libs import (create_captcha_img,
                   login,
                   edit_profile,
                   bind_email_libs,
+                  auth_email_code_libs,
+                  add_avatar_libs,
                   auth_captche, )
 
 
@@ -185,3 +187,37 @@ def bind_user_email(request):
         return HttpResponse(result['msg'])
 
     return render(request, 'account/account_bind_email.html')
+
+
+def auth_user_code(request):
+    """
+    验证邮箱
+    :param request:
+    :return:
+    """
+    getdata = request.GET.copy()
+    emial_code = getdata.get('code', '')
+    email = getdata.get('email', '')
+    current = getdata.get('current', '')
+    print '____________________________'
+    print request, emial_code, email, current
+    result = auth_email_code_libs(request, emial_code, email, current)
+    if result['status'] is True:
+        return redirect("account/user_edit")
+    else:
+        return HttpResponse(result['msg'])
+
+
+
+def upload_avatar(request):
+    avatar = request.FILES.get('user_avatar','' )
+    if avatar != '':
+        print avatar
+        print type(avatar)
+        result = add_avatar_libs(request, avatar)
+        if result['status'] is True:
+            return render(request, 'account/account_edit.html', {'message': result['msg']})
+        return render(request, 'account/account_edit.html', {'message': result['msg']})
+
+    else:
+        return render(request, 'account/account_edit.html', {'message': ''})

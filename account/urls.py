@@ -8,6 +8,8 @@ from views import (UserRegiest,
                    logout,
                    user_edit,
                    bind_user_email,
+                   auth_user_code,
+                   upload_avatar,
                    Captcha)
 
 urlpatterns = [
@@ -20,4 +22,6 @@ urlpatterns = [
     url(r'^logout/$', logout, name='logout'),
     url(r'^user_edit/$', user_edit, name='user_edit'),
     url(r'^bind_user_email/$', bind_user_email, name='bind_user_email'),
+    url(r'^auth_email_code/$', auth_user_code, name='auth_user_code'),
+    url(r'^upload_avatar/$', upload_avatar, name='upload_avatar'),
 ]

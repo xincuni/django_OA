@@ -84,13 +84,14 @@ class User(models.Model):
             ext = imghdr.what("", h=image_data)
             print ext
             print self.uuid
+            uu = str(self.uuid)
             if ext in ['png', 'jpeg', 'jpg', 'gif', 'bmp'] and not self.is_xss_image(image_data):
                 if self._avatar and os.path.exists("static/images/useravatars/" + self._avatar):
                     os.unlink("static/images/useravatars/" + self._avatar)
-                file_path = str("static/images/useravatars/" + self.uuid + '.' + ext)
+                file_path = "static/images/useravatars/" + uu + '.' + ext
                 with open(file_path, 'wb') as f:
                     f.write(image_data)
-                self._avatar = self.uuid + '.' + ext
+                self._avatar = uu + '.' + ext
             else:
                 raise ValidationError("not in ['png', 'jpeg', 'gif', 'bmp']")
         else:

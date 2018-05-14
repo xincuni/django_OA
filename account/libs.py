@@ -4,6 +4,7 @@ from random import randint, choice
 from string import printable
 from uuid import uuid4
 import json
+import traceback
 from utils.captcha.captcha import create_captcha
 from public_libs.yun_tong_xun.yun_tong_xun import sendTemplateSMS
 from public_libs.send_email.send_email_libs import send_qq_html_email
@@ -130,13 +131,65 @@ def bind_email_libs(request, email):
         redis_text = json.dumps(text_dict)
         content = """
              <p>html邮件格式练习</p>
-              <p><a href="http://192.168.201.135:8000/account/auth_email_code?code={}&email={}&current={}">
+              <p><a href="http://127.0.0.1:8000/account/auth_email_code?code={}&email={}&current={}">
               点击链接验证
-              href="http://192.168.201.135:8000/account/auth_email_code
+              href="http://127.0.0.1:8000/account/auth_email_code
               </a></p>
             """.format(email_code, email, u)
         send_qq_html_email('40308351@qq.com', [email], u'Django练习', content)
-
+        print '邮箱验证码是', email
         conn.setex('email:%s' % email, redis_text, 120)
         return {"status": True, "msg": '邮件发送成功'}
     return {"status": False, "msg": '没有邮箱'}
+
+
+def auth_email_code_libs(request, emial_code, email, current):
+    """
+    验证邮箱
+    :param request:
+    :param emial_code:
+    :param email:
+    :param current:
+    :return:
+    """
+    redis_text = conn.get('email:%s' % email)
+    if redis_text is not None:
+        text_dict = json.loads(redis_text)
+        print '-------------------------'
+        print text_dict
+        if text_dict and text_dict['email_code'] == emial_code:
+            # user = request.current_user
+            # print user
+            # if user is None:
+            user = User.by_id(text_dict[current])  # text_dict['seifjalsjgiae']
+            # print user
+            user.email = email
+            user.update_time = datetime.now()
+            user.save()
+            return {'status': True, 'msg': "邮箱修改成功"}
+        return {'status': False, 'msg': "验证码错误"}
+    else:
+        return {'status': False, 'msg': "邮箱不正确或者验证码已经过期"}
+
+
+def add_avatar_libs(request, avatar):
+    """
+    头像上传
+    :param request:
+    :param avatar:
+    :return:
+    """
+    if avatar.multiple_chunks(chunk_size=None) is True:
+        return {'status': False, 'msg': "头像图片要求小于2兆"}
+    try:
+
+        user = request.current_user
+        user.avatar = avatar.read()
+        user.update_time = datetime.now()
+        user.save()
+        return {'status': True, 'msg': '图片上传成功'}
+    except Exception as e:
+        print e
+        send_qq_html_email('40308351@qq.com', ['40308351@qq.com'], u'django_error',
+                           traceback.format_exc().replace('\n', '</br>'))
+        return {'status': False, 'msg': e}
