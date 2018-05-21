@@ -74,7 +74,7 @@
                             {% for article in newarticles %}
                                 <div class="media">
                                     <a href="javascript:;" class="pull-left">
-                                        <img alt="" src="/static/common/images/blog/blog-thumb-1.jpg" class=" ">
+                                        <img alt="" src="{{ article.thumbnail }}" class=" ">
                                     </a>
                                     <div class="media-body">
                                         <h5 class="media-heading">{{ article.createtime }} </h5>
