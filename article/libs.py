@@ -37,15 +37,15 @@ def article_get_catgorys_tags_lib():
     获取标签和分类
     :return:
     """
-    categorys = Category.all()
+    category = Category.all()
     tags = Tag.all()
     # print tags,'---------------'
-    return categorys, tags
+    return category, tags
 
 
 def add_article_libs(request, title, article_content, category, tags, article_id, desc, thumbnail):
     """
-    添加文档或者编辑文档
+    添加文档
     title, article, category, tags, article_id, desc, thumbnail
     :param args:
     :return:
@@ -59,6 +59,8 @@ def add_article_libs(request, title, article_content, category, tags, article_id
     if article_id != '':
         article = Article.by_id(article_id)
         article.tags = []
+        # article.save()
+        # article = Article.by_id(article_id)
     else:
         article = Article()
 
@@ -68,6 +70,17 @@ def add_article_libs(request, title, article_content, category, tags, article_id
     article.desc = desc
     article.category_id = category
     article.thumbnail = thumbnail
+    # print request.current_user
+    article.save()
+    """
+        'data': {
+                'title': title,
+                'article': article,
+                'desc': desc,
+                'category': category,
+                'thumbnail': thumbnail,
+                'tags': tags,
+                'article_id': $('#title-input').attr('data-article-id')"""
     for tag in tags:
         tag = Tag.by_id(tag)
         print tag
